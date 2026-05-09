@@ -21,11 +21,11 @@ async function getPlayers() {
   }
 }
 
-/**Update state with single event from API
+/**Update state with single player from API
  */
-async function getParty(id) {
+async function getPlayer(id) {
   try {
-    const response = await fetch(API + "/events/" + id);
+    const response = await fetch(API + "/players/" + id);
     const result = await response.json();
     selectedParty = result.data;
     render();
@@ -98,7 +98,7 @@ function PartyListItem(party) {
   $li.innerHTML = `
     <a href="#selected">${party.name}</a>
   `;
-  $li.addEventListener("click", () => getParty(party.id));
+  $li.addEventListener("click", () => getPlayer(party.id));
 
   return $li;
 }
