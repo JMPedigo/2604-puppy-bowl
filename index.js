@@ -66,7 +66,7 @@ async function createNewParty(party) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(party),
     });
-    await getParties();
+    await getPlayers();
   } catch (error) {
     console.error(error);
   }
@@ -79,7 +79,7 @@ async function deleteParty(id) {
       method: "DELETE",
     });
     selectedParty = undefined;
-    await getParties();
+    await getPlayers();
   } catch (error) {
     console.error(error);
   }
@@ -115,14 +115,14 @@ function PartyList() {
 }
 
 /** I need a function to show selected event information */
-function SelectedParty() {
+function SelectedPlayer() {
   if (!selectedParty) {
     const $p = document.createElement("p");
     $p.textContent = "Please select a party to learn more.";
 
     return $p;
   }
-  /** I need to add a delete button to SelectedParty to show up in Party Details */
+  /** I need to add a delete button to SelectedPlayer to show up in Party Details */
   const $party = document.createElement("section");
   $party.innerHTML = `
     <h3>${selectedParty.name} #${selectedParty.id}</h3>
@@ -162,7 +162,7 @@ function GuestList() {
 }
 
 /** I need a form element to add a new party with a button*/
-function NewPartyForm() {
+function NewPlayerForm() {
   const $form = document.createElement("form");
   $form.innerHTML = `
   <label>
@@ -203,27 +203,27 @@ function render() {
   const $app = document.querySelector("#app");
   //I need similar HTML elements as the gala guided practice, changing h1 to event Planner, 1st h2 to Upcoming Parties, ArtistList to eventList, 2nd h2 to event Details, ArtistDetails to eventDetails
   $app.innerHTML = `
-    <h1>Party Planner</h1>
+    <h1>Puppy Bowl 2026</h1>
     <main>
       <section>
-        <h2>Upcoming Parties</h2>
-        <PartyList></PartyList>
-        <h3>Add a new party</h3>
-        <NewPartyForm></NewPartyForm>
+        <h2>Puppy Roster</h2>
+        <PlayerList></PlayerList>
+        <h3>Invite a puppy!</h3>
+        <NewPlayerForm></NewPlayerForm>
       </section>
       <section id="selected">
-        <h2>Party Details</h2>
-        <PartyDetails></PartyDetails>
+        <h2>Puppy Details</h2>
+        <PlayerDetails></PlayerDetails>
       </section>
     </main>
   `;
-  $app.querySelector("PartyList").replaceWith(PartyList());
-  $app.querySelector("NewPartyForm").replaceWith(NewPartyForm());
-  $app.querySelector("PartyDetails").replaceWith(SelectedParty());
+  $app.querySelector("PlayerList").replaceWith(PlayerList());
+  $app.querySelector("NewPlayerForm").replaceWith(NewPlayerForm());
+  $app.querySelector("PlayerDetails").replaceWith(SelectedPlayer());
 }
 
 async function init() {
-  await getParties();
+  await getPlayers();
   await getRsvps();
   await getGuests();
   render();
