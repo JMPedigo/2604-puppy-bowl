@@ -8,13 +8,13 @@ let players = [];
 let selectedPlayer;
 let teams = [];
 
-/**Update state with all events from the API
+/**Update state with all players from the API
  */
-async function getParties() {
+async function getPlayers() {
   try {
-    const response = await fetch(API + "/events");
+    const response = await fetch(API + "/players");
     const result = await response.json();
-    parties = result.data;
+    players = result.data;
     render();
   } catch (error) {
     console.error(error);
