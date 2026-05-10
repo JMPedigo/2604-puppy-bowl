@@ -27,44 +27,32 @@ async function getPlayer(id) {
   try {
     const response = await fetch(API + "/players/" + id);
     const result = await response.json();
-    selectedParty = result.data;
+    selectedPlayer = result.data;
     render();
   } catch (error) {
     console.error(error);
   }
 }
 
-/** Update state with RSVPs from API */
-async function getRsvps() {
+/** Update state with teams from API */
+async function getTeams() {
   try {
-    const response = await fetch(API + "/rsvps");
+    const response = await fetch(API + "/teams");
     const result = await response.json();
-    rsvps = result.data;
+    teams = result.data;
     render();
   } catch (error) {
     console.error(error);
   }
 }
 
-/** Update state with guests from API */
-async function getGuests() {
+/** I need a function to invite a new player using the API */
+async function inviteNewPlayer(player) {
   try {
-    const response = await fetch(API + "/guests");
-    const result = await response.json();
-    guests = result.data;
-    render();
-  } catch (error) {
-    console.error(error);
-  }
-}
-
-/** I need a function to create a party using the API */
-async function createNewParty(party) {
-  try {
-    await fetch(API + "/events", {
+    await fetch(API + "/players", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(party),
+      body: JSON.stringify(player),
     });
     await getPlayers();
   } catch (error) {
@@ -72,13 +60,13 @@ async function createNewParty(party) {
   }
 }
 
-/** I need a function to delete a party from the list */
-async function deleteParty(id) {
+/** I need a function to delete a player from the list */
+async function deletePlayer(id) {
   try {
-    await fetch(API + "/events/" + id, {
+    await fetch(API + "/players/" + id, {
       method: "DELETE",
     });
-    selectedParty = undefined;
+    selectedPlayer = undefined;
     await getPlayers();
   } catch (error) {
     console.error(error);
@@ -87,18 +75,18 @@ async function deleteParty(id) {
 
 // === Components ===
 
-/**I need a single list item containing details about the event when clicked */
-function PartyListItem(party) {
+/**I need a single list item containing details about the player when clicked */
+function PartyListItem(player) {
   const $li = document.createElement("li");
 
-  if (party.id === selectedParty?.id) {
+  if (player.id === selectedPlayer?.id) {
     $li.classList.add("selected");
   }
 
   $li.innerHTML = `
-    <a href="#selected">${party.name}</a>
+    <a href="#selected">${player.name}</a>
   `;
-  $li.addEventListener("click", () => getPlayer(party.id));
+  $li.addEventListener("click", () => getPlayer(player.id));
 
   return $li;
 }
@@ -116,38 +104,38 @@ function PartyList() {
 
 /** I need a function to show selected event information */
 function SelectedPlayer() {
-  if (!selectedParty) {
+  if (!selectedPlayer) {
     const $p = document.createElement("p");
-    $p.textContent = "Please select a party to learn more.";
+    $p.textContent = "Please select a player to learn more.";
 
     return $p;
   }
   /** I need to add a delete button to SelectedPlayer to show up in Party Details */
-  const $party = document.createElement("section");
-  $party.innerHTML = `
-    <h3>${selectedParty.name} #${selectedParty.id}</h3>
-    <time datetime="${selectedParty.date}">
-      ${selectedParty.date.slice(0, 10)}
+  const $player = document.createElement("section");
+  $player.innerHTML = `
+    <h3>${selectedPlayer.name} #${selectedPlayer.id}</h3>
+    <time datetime="${selectedPlayer.date}">
+      ${selectedPlayer.date.slice(0, 10)}
     </time>
-    <address>${selectedParty.location}</address>
-    <p>${selectedParty.description}</p>
+    <address>${selectedPlayer.location}</address>
+    <p>${selectedPlayer.description}</p>
     <GuestList></GuestList>
-    <button id="deletebutton">Delete party</button>
+    <button id="deletebutton">Delete player</button>
     `;
-  $party.querySelector("GuestList").replaceWith(GuestList());
+  $player.querySelector("GuestList").replaceWith(GuestList());
 
-  const $delete = $party.querySelector("button");
-  $delete.addEventListener("click", () => deleteParty(selectedParty.id));
+  const $delete = $player.querySelector("button");
+  $delete.addEventListener("click", () => deletePlayer(selectedPlayer.id));
 
-  return $party;
+  return $player;
 }
 
 /** I need a list of guests for the SelectedEvent */
 function GuestList() {
   const $ul = document.createElement("ul");
   const guestsAtParty = guests.filter((guest) =>
-    rsvps.find(
-      (rsvp) => rsvp.guestId === guest.id && rsvp.eventId === selectedParty.id,
+/teams.find(
+      (rsvp) => rsvp.guestId === guest.id && rsvp.eventId === selectedPlayer.id,
     ),
   );
 
@@ -161,7 +149,7 @@ function GuestList() {
   return $ul;
 }
 
-/** I need a form element to add a new party with a button*/
+/** I need a form element to add a new player with a button*/
 function NewPlayerForm() {
   const $form = document.createElement("form");
   $form.innerHTML = `
@@ -181,13 +169,13 @@ function NewPlayerForm() {
     Location
     <input name="location" required />
   </label>
-  <button id="addbutton">Add party</button>
+  <button id="addbutton">Add player</button>
   `;
   $form.addEventListener("submit", (event) => {
     event.preventDefault();
     const data = new FormData($form);
     const date = new Date(data.get("date")).toISOString();
-    createNewParty({
+    inviteNewPlayer({
       name: data.get("name"),
       description: data.get("description"),
       date,
@@ -224,7 +212,7 @@ function render() {
 
 async function init() {
   await getPlayers();
-  await getRsvps();
+  await getTeams();
   await getGuests();
   render();
 }
