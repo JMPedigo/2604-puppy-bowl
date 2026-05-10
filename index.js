@@ -34,6 +34,15 @@ function PuppyList() {
 
   return $ul;
 }
+
+/** I need a function that displays detailed information about the selected player */
+function SelectedPuppy() {
+  if (!selectedPuppy) {
+    const $p = document.createElement("p");
+    $p.textContent = "Please select a puppy to discover more details.";
+    return $p;
+  }
+}
 // === Render ===
 function render() {
   const $app = document.querySelector("#app");
@@ -52,7 +61,7 @@ function render() {
     `;
 
   $app.querySelector("PuppyList").replaceWith(PuppyList());
-  //$app.querySelector("SelectedPuppy").replaceWith(Selected)
+  $app.querySelector("SelectedPuppy").replaceWith(SelectedPuppy());
 }
 
 async function init() {
