@@ -35,3 +35,28 @@ function PuppyList() {
   return $ul;
 }
 // === Render ===
+function render() {
+  const $app = document.querySelector("#app");
+  $app.innerHTML = `
+        <h1>Puppy Bowl 2026</h1>
+        <main>
+            <section>
+                <h2>Player Roster</h2>
+                <PuppyList></PuppyList>
+            </section>
+            <section id="selected">
+                <h2>Player Details</h2>
+                <SelectedPuppy></SelectedPuppy>
+            </section>
+        </main>
+    `;
+
+  $app.querySelector("PuppyList").replaceWith(PuppyList());
+  //$app.querySelector("SelectedPuppy").replaceWith(Selected)
+}
+
+async function init() {
+  render();
+}
+
+init();
