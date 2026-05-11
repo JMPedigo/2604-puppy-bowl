@@ -1,4 +1,11 @@
 * {
-  background-color: black;
-  color: magenta;
+  background-color: rgb(14, 13, 13);
+  color: rgb(199, 97, 230);
+  border: 1px, solid, rgb(44, 91, 75);
+}
+
+main {
+  display: grid;
+  grid-template-columns: 1fr, 1fr;
+  border: 1px, solid, rgb(223, 37, 12);
 }
