@@ -153,30 +153,6 @@ function PlayerImage() {
   return $image;
 }
 
-/** I need a form element to add a new party with a button*/
-function NewPlayerForm() {
-  const $form = document.createElement("form");
-  $form.innerHTML = `
-  <label>
-    Name
-    <input name="name" required />
-  </label>
-  <label>
-    Breed
-    <input name="breed" required />
-  </label>
-  <button id="addbutton">Add player to roster</button>
-  `;
-  $form.addEventListener("submit", (player) => {
-    player.preventDefault();
-    const data = new FormData($form);
-    createNewPlayer({
-      name: data.get("name"),
-      breed: data.get("breed"),
-    });
-  });
-  return $form;
-}
 // === Render ===
 
 function render() {
