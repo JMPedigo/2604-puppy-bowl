@@ -1,3 +1,13 @@
+/**
+ * @typedef Player
+ * @property {number} id
+ * @property {string} name
+ * @property {string} breed
+ * @property {string} status
+ * @property {number} teamId
+ * @property {string} imageUrl
+ */
+
 // === Constants ===
 const BASE = "https://fsa-puppy-bowl.herokuapp.com/api";
 const COHORT = "/2604-JAMES";
@@ -6,7 +16,7 @@ const API = BASE + COHORT;
 // === State ===
 let players = [];
 let selectedPlayer;
-let data = {};
+let img;
 
 /**Update state with all players from the API
  */
@@ -14,7 +24,6 @@ async function getPlayers() {
   try {
     const response = await fetch(API + "/players");
     const result = await response.json();
-    console.debug(result);
     players = result.data.players;
     render();
   } catch (error) {
@@ -29,7 +38,7 @@ async function getPlayer(id) {
     const response = await fetch(API + "/players/" + id);
     const result = await response.json();
     console.debug(result);
-    selectedPlayer = result.data.players;
+    selectedPlayer = result.data.player;
     render();
   } catch (error) {
     console.error(error);
@@ -63,6 +72,17 @@ async function deletePlayer(id) {
   }
 }
 
+async function getImage(image) {
+  try {
+    const response = await fetch(API + "/players/" + imageUrl);
+    const result = await response.json();
+    console.debug(result);
+    image = result.data.players;
+    render();
+  } catch (e) {
+    console.error(e);
+  }
+}
 // === Components ===
 
 /**I need a single list item containing details about the player when clicked */
@@ -74,7 +94,10 @@ function PlayerListItem(player) {
   }
 
   $li.innerHTML = `
-    <a href="#selected">${player.name}</a>
+    <figure>
+      <img class="player" alt="player.name" src="${player.imageUrl}" />
+      <a href="#selected">${player.name}</a>
+    </figure>
   `;
   $li.addEventListener("click", () => getPlayer(player.id));
 
@@ -84,7 +107,7 @@ function PlayerListItem(player) {
 /**I need a list of player names */
 function PlayerList() {
   const $ul = document.createElement("ul");
-  $ul.classList.add("players");
+  $ul.classList.add("roster");
 
   const $players = players.map(PlayerListItem);
   $ul.replaceChildren(...$players);
@@ -103,12 +126,14 @@ function SelectedPlayer() {
   /** I need to add a delete button to SelectedParty to show up in Party Details */
   const $player = document.createElement("section");
   $player.innerHTML = `
+    <figure>
+      <img alt="${selectedPlayer.name}" src="${selectedPlayer.imageUrl}" />
+    </figure>
     <h3>${selectedPlayer.name}</h3>
     <p>ID ${selectedPlayer.id}</p>
     <p>Breed ${selectedPlayer.breed}</p>
     <p>Team ${selectedPlayer.teamId}
-    <p>Status ${selectedParty.status}</p>
-    <button id="gobackbutton">Return to Player Roster</button>
+    <p>Status ${selectedPlayer.status}</p>
     <button id="deletebutton">Remove from Roster</button>
     `;
 
@@ -118,24 +143,15 @@ function SelectedPlayer() {
   return $player;
 }
 
-/** I need a list of guests for the SelectedEvent */
-/**function GuestList() {
-  const $ul = document.createElement("ul");
-  const guestsAtParty = guests.filter((guest) =>
-    rsvps.find(
-      (rsvp) => rsvp.guestId === guest.id && rsvp.eventId === selectedParty.id,
-    ),
-  );
+/** I need an image html element */
+function PlayerImage() {
+  const $image = document.createElement("img");
+  $image.innerHTML = `
+  <img alt="player.name" src="player.imageUrl" />
+  `;
 
-  const $guests = guestsAtParty.map((guest) => {
-    const $guest = document.createElement("li");
-    $guest.textContent = guest.name;
-    return $guest;
-  });
-  $ul.replaceChildren(...$guests);
-
-  return $ul;
-}*/
+  return $image;
+}
 
 /** I need a form element to add a new party with a button*/
 function NewPlayerForm() {
@@ -154,7 +170,6 @@ function NewPlayerForm() {
   $form.addEventListener("submit", (player) => {
     player.preventDefault();
     const data = new FormData($form);
-    /**const date = new Date(data.get("date")).toISOString();*/
     createNewPlayer({
       name: data.get("name"),
       breed: data.get("breed"),

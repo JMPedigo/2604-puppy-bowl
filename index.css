@@ -1,11 +1,53 @@
-* {
+body {
   background-color: rgb(14, 13, 13);
   color: rgb(199, 97, 230);
-  border: 1px, solid, rgb(44, 91, 75);
+  margin: 0;
+  padding: 1rem;
 }
 
+h1 {
+  text-align: center;
+}
 main {
   display: grid;
-  grid-template-columns: 1fr, 1fr;
-  border: 1px, solid, rgb(223, 37, 12);
+  gap: 1rem;
+}
+
+ul {
+  display: grid;
+  justify-content: space-between;
+  grid-template-columns: repeat(1fr);
+}
+
+@media (width >= 600px) {
+  main {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.player {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  height: 5rem;
+  width: 5rem;
+  justify-content: center;
+}
+
+.roster {
+  list-style: none;
+  display: grid;
+  gap: 1ch;
+  padding: 0.5rem;
+  text-decoration: none;
+}
+
+section figure img {
+  height: 100%;
+  width: 100%;
+}
+
+form {
+  display: grid;
+  gap: 1ch;
+  padding: 0 1rem;
 }
